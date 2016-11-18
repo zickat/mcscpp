@@ -192,7 +192,7 @@ void computeMFCC(float **X_mfcc, int *length_xmfcc, int16_t *x, int Nx, int freq
 	int nb_fft_kept = power2of_sample;	// Number of MFCC coefficient kept
 	float *han_window = new float[power2of_sample];
 
-	printf("size : %d\n", dim_mfcc*(n_frames + 1)); 
+	//printf("size : %d\n", dim_mfcc*(n_frames + 1)); 
 
 	// Memory allocation
 	//FFTReal::flt_t	* const	X = new FFTReal::flt_t[power2of_sample];

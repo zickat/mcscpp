@@ -44,7 +44,7 @@ float dtw(int n_ck, int n_cunk, int dim_mfcc, float* c_k, float* c_unk) {
     float testmin[3];
     float indMin;
 
-    printf("%d - %d\n", n_ck, n_cunk);
+    //printf("%d - %d\n", n_ck, n_cunk);
 
     //g = (float**)malloc((n_ck+1)* sizeof(float *));
     g = new float * [dim_mfcc + 1];
@@ -76,7 +76,7 @@ float dtw(int n_ck, int n_cunk, int dim_mfcc, float* c_k, float* c_unk) {
         }
         //printf("\n");
     }
-    printf("%d - %d\n", n_ck, n_cunk);
+    //printf("%d - %d\n", n_ck, n_cunk);
     //printf("fin\n");
     //printf("%f\n", g[dim_mfcc][dim_mfcc]/(dim_mfcc + dim_mfcc));
     /*for(int i=0; i < dim_mfcc + 1; i++){

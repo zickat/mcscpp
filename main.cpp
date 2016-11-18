@@ -13,10 +13,10 @@
 #include <limits>
 
 #define nbMots 13
-#define nbLocuteurs 1
+#define nbLocuteurs 17
 
 std::string vocabulaire[] = {"arretetoi", "atterrissage", "avance", "decollage", "droite", "etatdurgence", "faisunflip", "gauche", "plusbas", "plushaut", "recule", "tournedroite", "tournegauche"};
-std::string locuteurs[] = {"M01"/*, "M02","M03","M04", "M05","M06","M07","M08", "M09", "M10", "M11", "M12", "M13", "F02","F03","F04", "F05"*/};
+std::string locuteurs[] = {"M01", "M02","M03","M04", "M05","M06","M07","M08", "M09", "M10", "M11", "M12", "M13", "F02","F03","F04", "F05"};
 
 
 using namespace std;
@@ -25,7 +25,7 @@ using namespace std;
 char * fichier(std::string ordre, std::string locuteur){
     std::stringstream ss;
     ss << "corpus/dronevolant_nonbruite/" << locuteur << "_" << ordre << ".wav";
-    printf("%s\n", ss.str().c_str());
+    //printf("%s\n", ss.str().c_str());
     return strdup(ss.str().c_str());
 }
 
@@ -40,16 +40,16 @@ void getMyMFCC(char * filename, float *** buffer, int * size){
     int16_t ** bufferSilence;
     int newLength;
 
-	printf("%d %s\n", mywav.bytes_in_data/sizeof(int16_t), filename);
+	//printf("%d %s\n", mywav.bytes_in_data/sizeof(int16_t), filename);
 	//fseek(f, 0, SEEK_END);
 	//printf("%d \n", ftell(f));
 	
-    printf("ICI\n");
+    //printf("ICI\n");
     int16_t * wavbuffer;
 
-    wavbuffer = new int16_t[mywav.bytes_in_data/sizeof(int16_t)];
+    wavbuffer = new int16_t[mywav.bytes_in_data];
     //int16_t * wavbuffer = (int16_t*)malloc(mywav.bytes_in_data);
-    printf("LA\n");
+    //printf("LA\n");
     int16_t b;
     
     //printf("%d\n", wavbuffer.size());
@@ -72,12 +72,13 @@ void getMyMFCC(char * filename, float *** buffer, int * size){
     delete[] wavbuffer, f;
 }
 
-void findWord(char * wavfile){
+int findWord(char * wavfile){
     int MatriceConfusion[nbMots] = {0};
     float inf = std::numeric_limits<float>::infinity();
     float ** buffWav;
     int sizeWav;
     getMyMFCC(wavfile, &buffWav, &sizeWav);
+    printf("Running ...\n");
     for (int i = 0; i < nbLocuteurs; ++i)
     {
         float min = inf;
@@ -97,10 +98,17 @@ void findWord(char * wavfile){
         }
         MatriceConfusion[indiceMin] ++;
     }
+    int max = 0;
+    int indiceMax = 0;
     for (int i = 0; i < nbMots; ++i)
     {
+        if(MatriceConfusion[i] > max){
+            max = MatriceConfusion[i];
+            indiceMax = i;
+        }
         printf("%d\n", MatriceConfusion[i]);
     }
+    return indiceMax;
 }
 
 
@@ -112,6 +120,8 @@ int main(int argc, char const *argv[]){
     std::string locuteur = "Aym";
     char * filename = fichier(vocabulaire[3], locuteur);
     char * test = fichier(vocabulaire[0], "M01");
+
+    printf("Mot a reconnaitre : %s\n", vocabulaire[3].c_str());
 
     /*float ** buff1;
     float ** buff2;
@@ -127,7 +137,8 @@ int main(int argc, char const *argv[]){
 
 //    std::stringstream ss;
 //    ss << cout;
-    findWord(filename);
+    int indMot = findWord(filename);
+    printf("L'ordre reconnu est : %s\n", vocabulaire[indMot].c_str());
     //printf("cout : %f\n", cout);
     //return env->NewStringUTF(ss.str().c_str());
     return 0;
