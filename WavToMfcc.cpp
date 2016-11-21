@@ -144,8 +144,9 @@ void removeSilence(int16_t * x, int Nx, int16_t ** xFiltered, int * newLength, f
 	while (lastVal > 0 && e[lastVal--] < threshold) {}
 	lastVal++;
 	delete[] e, x_abs;
-	printf("%d : %d %d %d\n", lastVal - firstVal + 1, Nx, lastVal, firstVal);
+	//printf("%d : %d %d %d\n", lastVal - firstVal + 1, Nx, lastVal, firstVal);
 	*xFiltered = new int16_t[lastVal - firstVal + 1];
+	//printf("%d : %d %d %d\n", lastVal - firstVal + 1, Nx, lastVal, firstVal);
 	int size = Nx - (lastVal - firstVal);
 	if (size > 2048) {
 		size = 2048;

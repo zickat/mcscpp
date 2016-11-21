@@ -25,7 +25,6 @@ using namespace std;
 char * fichier(std::string ordre, std::string locuteur){
     std::stringstream ss;
     ss << "corpus/dronevolant_nonbruite/" << locuteur << "_" << ordre << ".wav";
-    //printf("%s\n", ss.str().c_str());
     return strdup(ss.str().c_str());
 }
 
@@ -37,34 +36,22 @@ void getMyMFCC(char * filename, float *** buffer, int * size){
 
     wavRead(&f, filename, &mywav);
 
-    int16_t ** bufferSilence;
+    int16_t ** bufferSilence = new int16_t*;
     int newLength;
-
-	//printf("%d %s\n", mywav.bytes_in_data/sizeof(int16_t), filename);
-	//fseek(f, 0, SEEK_END);
-	//printf("%d \n", ftell(f));
-	
-    //printf("ICI\n");
     int16_t * wavbuffer;
 
     wavbuffer = new int16_t[mywav.bytes_in_data];
-    //int16_t * wavbuffer = (int16_t*)malloc(mywav.bytes_in_data);
-    //printf("LA\n");
     int16_t b;
-    
-    //printf("%d\n", wavbuffer.size());
     
     int i = 0;
 
 	while(fread(&b, sizeof(int16_t), 1, f) > 0){
-		//printf("%d %d\n", i, b);
 		wavbuffer[i++] = b;
-		//printf("%d %d\n", i, b);
 	}
 
    //int n = fread(wavbuffer, sizeof(int16_t), mywav.bytes_in_data/sizeof(int16_t), f);
 
-    //removeSilence(&wavbuffer[0], mywav.bytes_in_data/sizeof(int16_t), bufferSilence, &newLength, 0.001);
+    //removeSilence(wavbuffer, mywav.bytes_in_data/sizeof(int16_t), bufferSilence, &newLength, 10);
     //delete(wavbuffer);
 
     //computeMFCC(*buffer, size, * bufferSilence, newLength, mywav.frequency, 512, 256, 13, 26);
@@ -112,46 +99,16 @@ int findWord(char * wavfile){
 }
 
 
-// jstring Java_com_example_benjidu11_projetmcsrecovocale_MainActivity_resolveWord(
-//         JNIEnv *env,
-//         jobject /* this */,
-//         jstring file) {
 int main(int argc, char const *argv[]){
-    std::string locuteur = "Aym";
-    char * filename = fichier(vocabulaire[3], locuteur);
-    char * test = fichier(vocabulaire[0], "M01");
+    if(argc < 2){
+        fprintf(stderr, "Usage : %s fichier_wav\n", argv[0]);
+        exit(1);
+    }
 
-    printf("Mot a reconnaitre : %s\n", vocabulaire[3].c_str());
+    char * filename = strdup(argv[1]);
 
-    /*float ** buff1;
-    float ** buff2;
-    int size1;
-    int size2;
-
-    getMyMFCC(filename, &buff1, &size1);
-    printf("%d\n", size1);
-    getMyMFCC(test, &buff2, &size2);
-
-    float cout = dtw(size1, size2, 13, *buff1, *buff2);*/
-    //float cout = dtw(size2, size2, 13, *buff2, *buff2);
-
-//    std::stringstream ss;
-//    ss << cout;
     int indMot = findWord(filename);
     printf("L'ordre reconnu est : %s\n", vocabulaire[indMot].c_str());
-    //printf("cout : %f\n", cout);
-    //return env->NewStringUTF(ss.str().c_str());
     return 0;
 }
 
-/*int main(int argc, char const *argv[])
-{
-    std::string vocabulaire[] = {"arretetoi", "atterrissage", "avance", "decollage", "droite", "etatdurgence", "faisunflip", "gauche", "plusbas", "plushaut", "recule", "tournedroite", "tournegauche"};
-    std::string locuteur = "Aym";
-    char * filename = fichier(vocabulaire[0], locuteur);
-    wavfile mywav;
-    FILE * f;
-    dtw(0,0,0, NULL, NULL);
-    //wavRead(&f, filename, &mywav);
-    return 0;
-}*/
